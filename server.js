@@ -1,21 +1,19 @@
 const express = require("express");
 const axios = require("axios");
+const bodyParser = require("body-parser")
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // status messages
-const defaultMessage = "Oops! There is no power in the apartment🙀";
-const newMessage = "Yayy! We have power";
+const defaultMessage = "Oops! There is no power in thy apartment🙀"
 
 // response object
 let response = {
-  status: defaultMessage
-};
+  "status": defaultMessage
+}
 
 // helper methods
-
-function changeStatus(message) {
-  response.status = message;
-}
 
 function sendReqToRaspberryPi() {
   return axios
@@ -30,8 +28,16 @@ function sendReqToRaspberryPi() {
 
 function runCollection() {
   axios.post(
-    `https://api.getpostman.com/monitors/${process.env.slack_uuid}/run?apikey=${process.env.slack_key}`
+    `https://api.getpostman.com/monitors/${process.env.monitor_uuid}/run?apikey=${process.env.pm_key}`
   );
+}
+
+function saveRequestBody(req) {
+  response.status= req.status
+}
+
+function reset() {
+  response.status = defaultMessage;
 }
 
 // routes
@@ -43,18 +49,18 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  changeStatus(newMessage);
+  saveRequestBody(req.body)
+  res.sendStatus(200);
 });
 
-app.get("/power", (req, res) => {
+app.get("/response", (req, res) => {
   res.send(response);
-  if (response.status === newMessage) {
-    changeStatus(defaultMessage);
-  }
+  reset();
 });
 
 app.post("/slack", (req, res) => {
-  res.send(runCollection())
+  res.send("Checking power status");
+  runCollection();
 });
 
 // run the server
