@@ -1,0 +1,23 @@
+{
+  "name": "slack-app",
+  "version": "0.0.1",
+  "description": "Rest API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.12.4",
+    "axios": "^0.19.2",
+    "smee-client": "^1.1.0"
+  },
+  "engines": {
+    "node": "6.x"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "api"
+  ],
+  "license": "MIT"
+}
